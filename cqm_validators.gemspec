@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "cqm_validators/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "cqm_validators"
+  spec.name          = "cqm-validators"
   spec.version       = CqmValidators::VERSION
   spec.authors       = ["Laura"]
   spec.email         = ["laclark@mitre.org"]
