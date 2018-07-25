@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = CqmValidators::VERSION
   spec.authors       = ["Laura", "Michael O'Keefe"]
   spec.email         = ["laclark@mitre.org", 'mokeefe@mitre.org']
+  spec.license       = 'Apache-2.0'
 
   spec.summary       = "new cqm validator library"
   spec.description   = "new cqm validator library"
