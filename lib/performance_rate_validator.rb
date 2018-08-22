@@ -18,13 +18,13 @@ module CqmValidators
       #grab measure IDs from QRDA file
       measure_ids = document.xpath(measure_selector).map(&:value).map(&:upcase)
       measure_ids.each do |measure_id|
-        measures = HealthDataStandards::CQM::Measure.where(id: measure_id)
+        measures = QDM::Measure.where(hqmf_id: measure_id)
         measures.each do |measure|
           result_key = measure["population_ids"].dup
-          reported_result, errors = extract_results_by_ids(measure['id'], result_key, document)
+          reported_result, errors = extract_results_by_ids(measure['hqmf_id'], result_key, document)
           #only check performace rate when there is one
           if reported_result['PR'] != nil
-            error = check_performance_rates(reported_result, result_key, measure['id'], data)
+            error = check_performance_rates(reported_result, result_key, measure['hqmf_id'], data)
             if error != nil
               errorsList << error
             end
