@@ -5,3 +5,6 @@ tmp
 .DS_Store
 .idea
 .rvmrc
+
+# This is a gem, so:
+Gemfile.lock
