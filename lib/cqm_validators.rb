@@ -1,4 +1,4 @@
-require "cqm_validators/version"
+require 'cqm_validators/version'
 require 'reported_result_extractor'
 require 'base_validator'
 require 'data_validator'
@@ -8,7 +8,7 @@ require 'qrda_qdm_template_validator'
 require 'schema_validator'
 require 'schematron_validator'
 require 'validators'
-require "schematron/c_processor"
+require 'schematron/c_processor'
 
 module CqmValidators
   # Your code goes here...
