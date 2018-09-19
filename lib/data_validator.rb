@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CqmValidators
   class DataValidator
     include BaseValidator
@@ -68,7 +70,7 @@ module CqmValidators
         elsif !@oids.include?(oid.value)
           errors << build_error("File appears to contain data criteria outside that required by the measures. Valuesets in file not in measures tested #{oid}'",
                                 node.path, options[:file_name])
-        elsif vs.concepts.where('code' => code, 'code_system' => code_system).count == 0
+        elsif vs.concepts.where('code' => code, 'code_system' => code_system).count.zero?
           unless null_flavor
             errors << build_error("The code #{code} in codeSystem #{code_system} cannot be found in the declared valueset #{oid}",
                                   node.path, options[:file_name])

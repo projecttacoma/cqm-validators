@@ -1,9 +1,20 @@
+# frozen_string_literal: true
+
 module CqmValidators
   module ReportedResultExtractor
     # takes a document and a list of 1 or more id hashes, e.g.:
-    # [{measure_id:"8a4d92b2-36af-5758-0136-ea8c43244986", set_id:"03876d69-085b-415c-ae9d-9924171040c2", ipp:"D77106C4-8ED0-4C5D-B29E-13DBF255B9FF", den:"8B0FA80F-8FFE-494C-958A-191C1BB36DBF", num:"9363135E-A816-451F-8022-96CDA7E540DD"}]
+    # [{measure_id:"8a4d92b2-36af-5758-0136-ea8c43244986",
+    #  set_id:"03876d69-085b-415c-ae9d-9924171040c2",
+    #  ipp:"D77106C4-8ED0-4C5D-B29E-13DBF255B9FF",
+    #  den:"8B0FA80F-8FFE-494C-958A-191C1BB36DBF",
+    #  num:"9363135E-A816-451F-8022-96CDA7E540DD"}]
     # returns nil if nothing matching is found
     # returns a hash with the values of the populations filled out along with the population_ids added to the result
+
+    SUPPLEMENTAL_DATA_MAPPING = { 'RACE' => '2.16.840.1.113883.10.20.27.3.8',
+                                  'ETHNICITY' => '2.16.840.1.113883.10.20.27.3.7',
+                                  'SEX' => '2.16.840.1.113883.10.20.27.3.6',
+                                  'PAYER' => '2.16.840.1.113883.10.20.27.3.9' }.freeze
 
     def extract_results_by_ids(measure_id, ids, doc)
       results = nil
@@ -12,14 +23,14 @@ module CqmValidators
       stratification ||= _ids.delete('STRAT')
       nodes = find_measure_node(measure_id, doc)
 
-      if nodes.nil? || nodes.empty?
+      if nodes.blank?
         # short circuit and return nil
         return {}
       end
 
       nodes.each do |n|
         results = get_measure_components(n, _ids, stratification)
-        break if !results.nil? || (!results.nil? && !results.empty?)
+        break if !results.nil? || results.present?
       end
       return nil if results.nil?
       results[:population_ids] = ids.dup
@@ -44,11 +55,9 @@ module CqmValidators
         else
           val, sup, pr = extract_component_value(n, k, v, stratification)
         end
-        if !val.nil?
+        unless val.nil?
           results[k.to_s] = val
           results[:supplemental_data][k] = sup
-        else
-          # return nil
         end
         results['PR'] = pr unless pr.nil?
       end
@@ -76,16 +85,14 @@ module CqmValidators
       return nil unless cv
       val = nil
       if strata
-        strata_path = %( cda:entryRelationship[@typeCode="COMP"]/cda:observation[./cda:templateId[@root = "2.16.840.1.113883.10.20.27.3.4"]  and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{strata.upcase}']])
+        strata_path = %( cda:entryRelationship[@typeCode="COMP"]/cda:observation[./cda:templateId[@root = "2.16.840.1.113883.10.20.27.3.4"] and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{strata.upcase}']])
         n = cv.xpath(strata_path)
         val = get_aggregate_count(n) if n
       else
         val = get_aggregate_count(cv)
       end
       # Performance rate is only applicable for unstratified values
-      if code == 'NUMER' && strata.nil?
-        pref_rate_value = extract_performance_rate(node, code, id)
-      end
+      pref_rate_value = extract_performance_rate(node, code, id) if code == 'NUMER' && strata.nil?
       [val, (strata.nil? ? extract_supplemental_data(cv) : nil), pref_rate_value]
     end
 
@@ -96,11 +103,10 @@ module CqmValidators
       unless perf_rate.nil?
         if perf_rate.at_xpath('./@nullFlavor')
           pref_rate_value['nullFlavor'] = 'NA'
-          return pref_rate_value
         else
           pref_rate_value['value'] = perf_rate.at_xpath('./@value').value
-          return pref_rate_value
         end
+        return pref_rate_value
       end
       nil
     end
@@ -108,11 +114,8 @@ module CqmValidators
     # convert numbers in value nodes to Int / Float as necessary TODO add more types other than 'REAL'
     def convert_value(value_node)
       return if value_node.nil?
-      if value_node['type'] == 'REAL' || value_node['value'].include?('.')
-        return value_node['value'].to_f
-      else
-        return value_node['value'].to_i
-      end
+      return value_node['value'].to_f if value_node['type'] == 'REAL' || value_node['value'].include?('.')
+      value_node['value'].to_i
     end
 
     # given an observation node with an aggregate count node, return the reported and expected value within the count node
@@ -134,10 +137,7 @@ module CqmValidators
 
     def extract_supplemental_data(cv)
       ret = {}
-      supplemental_data_mapping = { 'RACE' => '2.16.840.1.113883.10.20.27.3.8',
-                                    'ETHNICITY' => '2.16.840.1.113883.10.20.27.3.7',
-                                    'SEX' => '2.16.840.1.113883.10.20.27.3.6',
-                                    'PAYER' => '2.16.840.1.113883.10.20.27.3.9' }
+
       supplemental_data_mapping.each_pair do |supp, id|
         key_hash = {}
         xpath = "cda:entryRelationship/cda:observation[cda:templateId[@root='#{id}']]"
@@ -145,7 +145,7 @@ module CqmValidators
           value = node.at_xpath('cda:value')
           count = get_aggregate_count(node)
           if value.at_xpath('./@nullFlavor')
-            if supp == 'PAYER' && value['xsi:type'] == 'CD' && value['nullFlavor'] == 'OTH' && value.at_xpath('cda:translation') && value.at_xpath('cda:translation')['code']
+            if supp == 'PAYER' && translation?(value)
               key_hash[value.at_xpath('cda:translation')['code']] = count
             else
               key_hash['UNK'] = count
@@ -161,6 +161,12 @@ module CqmValidators
 
     def translate(id)
       %{translate(#{id}, "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")}
+    end
+
+    private
+
+    def translation?(value)
+      value['xsi:type'] == 'CD' && value['nullFlavor'] == 'OTH' && value.at_xpath('cda:translation') && value.at_xpath('cda:translation')['code']
     end
   end
 end

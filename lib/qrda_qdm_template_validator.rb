@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CqmValidators
   class QrdaQdmTemplateValidator
     include BaseValidator
@@ -278,7 +280,7 @@ module CqmValidators
                        when 'r3_1' then QRDA_CAT_1_R3_1_QDM_OIDS
                        when 'r4' then QRDA_CAT_1_R4_QDM_OIDS
                        when 'r5' then QRDA_CAT_1_R5_QDM_OIDS
-                      end
+                       end
     end
 
     # Validates that a QRDA Cat I file's Patient Data Section QDM (V3) contains entries that conform

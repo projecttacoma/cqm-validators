@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module CqmValidators
   module Schematron
-    module CProcessor
+    module Processor
       def get_errors(document)
         document = get_document(document)
         processor.transform(document)

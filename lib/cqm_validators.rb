@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cqm_validators/version'
 require 'reported_result_extractor'
 require 'base_validator'

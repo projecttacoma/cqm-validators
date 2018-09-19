@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CqmValidators
   class MeasureValidator
     include BaseValidator
@@ -19,9 +21,7 @@ module CqmValidators
       doc_bundle_neutral_ids = doc_neutral_ids - (doc_neutral_ids - bundle_neutral_ids)
       validate_measure_ids(doc_measure_ids, measure_ids, data)
       validate_set_ids(doc_neutral_ids, doc_bundle_neutral_ids, data)
-      if validate_no_repeating_measure_population_ids(data)
-        validate_measure_ids_set_ids_usage(doc_bundle_neutral_ids, doc_measure_ids, data)
-      end
+      validate_measure_ids_set_ids_usage(doc_bundle_neutral_ids, doc_measure_ids, data) if validate_no_repeating_measure_population_ids(data)
 
       @errors
     end
@@ -30,19 +30,19 @@ module CqmValidators
 
     # returns true if there are no repeating measures, check to see that the measure id usage is correct
     def validate_no_repeating_measure_population_ids(data = {})
-      noDuplicateMeasures = true
+      no_duplicate_measures = true
       doc_population_ids = @doc.xpath(measure_population_selector).map(&:value).map(&:upcase).sort
       duplicates = doc_population_ids.group_by { |e| e }.select { |_k, v| v.size > 1 }.map(&:first)
       duplicates.each do |duplicate|
         begin
-          measureId = @doc.xpath(find_measure_node_for_population(duplicate)).at_xpath("cda:reference/cda:externalDocument/cda:id[./@root='2.16.840.1.113883.4.738']/@extension")
-          @errors << build_error("Population #{duplicate} for Measure #{measureId.value} reported more than once", '/', data[:file_name])
+          measure_id = @doc.xpath(find_measure_node_for_population(duplicate)).at_xpath("cda:reference/cda:externalDocument/cda:id[./@root='2.16.840.1.113883.4.738']/@extension")
+          @errors << build_error("Population #{duplicate} for Measure #{measure_id.value} reported more than once", '/', data[:file_name])
         rescue StandardError
           @errors << build_error("Population #{duplicate} for reported more than once", '/', data[:file_name])
         end
-        noDuplicateMeasures = false
+        no_duplicate_measures = false
       end
-      noDuplicateMeasures
+      no_duplicate_measures
     end
 
     def validate_measure_ids(doc_measure_ids, measure_ids, data = {})

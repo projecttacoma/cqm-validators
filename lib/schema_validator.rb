@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CqmValidators
   module Schema
     class Validator

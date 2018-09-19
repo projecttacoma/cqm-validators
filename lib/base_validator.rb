@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CqmValidators
   # this is the baseValidator module
   module BaseValidator
@@ -13,7 +15,7 @@ module CqmValidators
               return input
             else
               input
-      end
+            end
       Nokogiri::XML(doc.to_s) { |conf| conf.strict.nonet.noblanks } # grumble, grumble nokogiri java @SS
     end
   end

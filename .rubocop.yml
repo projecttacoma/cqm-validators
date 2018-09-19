@@ -1,0 +1,46 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  TargetRailsVersion: 4.2
+  Exclude:
+    - bin/*
+Rails:
+  Enabled: true
+Documentation:
+  Enabled: false
+Metrics/LineLength:
+  Max: 150
+  Exclude:
+    - 'test/**/*'
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 20
+Metrics/ClassLength:
+  Max: 120
+  Exclude:
+    - 'test/**/*'
+Metrics/AbcSize:
+  # The ABC size is a calculated magnitude, so this number can be a Fixnum or
+  # a Float.
+  Max: 32
+  Exclude:
+    - 'test/**/*.rb'
+Metrics/ModuleLength:
+  Max: 110
+# Avoid complex methods.
+Metrics/CyclomaticComplexity:
+  Max: 10
+Metrics/PerceivedComplexity:
+  Max: 10
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+Style/DateTime:
+  Enabled: false
+Style/GuardClause:
+  MinBodyLength: 100
+Style/HashSyntax:
+  UseHashRocketsWithSymbolValues: true
+Style/MixinUsage:
+  Exclude:
+    - 'test/test_helper.rb'
+Style/RescueStandardError:
+  Enabled: false
