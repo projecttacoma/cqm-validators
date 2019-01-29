@@ -61,16 +61,16 @@ module CqmValidators
             oid = node.at_xpath("@sdtc:valueSet")
             vs = @bundle.value_sets.where({"oid" => oid}).first
             code = node.at_xpath("@code")
-            code_system = node.at_xpath("@codeSystem")
+            code_system_oid = node.at_xpath("@codeSystem")
             null_flavor = node.at_xpath("@nullFlavor")
             if !vs
               errors << build_error("The valueset #{oid} declared in the document cannot be found", node.path, options[:file_name])
             elsif !@oids.include?(oid.value)
               errors << build_error("File appears to contain data criteria outside that required by the measures. Valuesets in file not in measures tested #{oid}'",
                           node.path, options[:file_name])
-            elsif vs.concepts.where({"code" => code, "code_system"=>code_system}).count() == 0
+            elsif vs.concepts.where({"code" => code, "code_system_oid"=>code_system_oid}).count() == 0
               if !null_flavor
-                errors << build_error("The code #{code} in codeSystem #{code_system} cannot be found in the declared valueset #{oid}",
+                errors << build_error("The code #{code} in codeSystem #{code_system_oid} cannot be found in the declared valueset #{oid}",
                   node.path, options[:file_name])
               end
             end
