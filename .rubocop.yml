@@ -1,35 +1,50 @@
-inherit_from: .rubocop_todo.yml
-
 AllCops:
   TargetRubyVersion: 2.6
   Exclude:
     - bin/*
 Documentation:
   Enabled: false
-Metrics/LineLength:
-  Max: 150
+# TODO: remove this exception when java_processor.rb is fixed to rescue StandardError
+Lint/RescueException:
   Exclude:
-    - 'test/**/*'
-Metrics/BlockLength:
-  Exclude:
-    - 'test/factories/*'
-Metrics/MethodLength:
-  CountComments: false  # count full line comments?
-  Max: 20
-  Exclude:
-    - 'test/**/*'
-Metrics/ClassLength:
-  Max: 120
-  Exclude:
-    - 'test/**/*'
+    - 'lib/schematron/java_processor.rb'
 Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be a Fixnum or
   # a Float.
   Max: 32
   Exclude:
     - 'test/**/*.rb'
+    # TODO: remove exclusions below this line as ABC Size is fixed
+    - 'lib/performance_rate_validator.rb'
+Metrics/BlockLength:
+  Exclude:
+    - 'test/factories/*'
+Metrics/ClassLength:
+  Max: 120
+  Exclude:
+    - 'test/**/*'
+    # TODO: remove exclusions below this line as Class length is fixed
+    - 'lib/qrda_qdm_template_validator.rb'
+Metrics/LineLength:
+  Max: 150
+  Exclude:
+    - 'test/**/*'
+    # TODO: remove exclusions below this line as line length is fixed
+    - 'lib/reported_result_extractor.rb'
+    - 'lib/data_validator.rb'
+    - 'lib/measure_validator.rb'
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 20
+  Exclude:
+    - 'test/**/*'
+    # TODO: remove exclusions below this line as method length is fixed
+    - 'lib/reported_result_extractor.rb'
 Metrics/ModuleLength:
   Max: 110
+  Exclude:
+    # TODO: remove exclusions below this line as module length is fixed
+    - 'lib/reported_result_extractor.rb'
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Max: 10
@@ -41,6 +56,9 @@ Style/DateTime:
   Enabled: false
 Style/GuardClause:
   MinBodyLength: 100
+  Exclude:
+    # TODO: remove exclusions below this line as ABC Size is fixed
+    - 'lib/performance_rate_validator.rb'
 Style/MixinUsage:
   Exclude:
     - 'test/test_helper.rb'
