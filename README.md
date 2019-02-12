@@ -5,7 +5,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/projec
 Environment
 ===========
 
-This project currently uses Ruby 2.3, Ruby 2.4, and Ruby 2.5 and is built using [Bundler](http://gembundler.com/). To get all of the dependencies for the project, first install bundler:
+This project currently uses Ruby 2.3, Ruby 2.4, Ruby 2.5 and Ruby 2.6 and is built using [Bundler](http://gembundler.com/). To get all of the dependencies for the project, first install bundler:
 
     gem install bundler
 
