@@ -6,7 +6,7 @@ class QrdaQdmTemplateValidatorTest < Minitest::Test
 
   def setup
     @validator_r3 = CqmValidators::QrdaQdmTemplateValidator.new('r3')
-    @validator_r3_1 = CqmValidators::QrdaQdmTemplateValidator.new('r3_1')
+    @validator_r31 = CqmValidators::QrdaQdmTemplateValidator.new('r3_1')
     @validator_r6 = CqmValidators::QrdaQdmTemplateValidator.new('r6')
   end
 
@@ -24,7 +24,7 @@ class QrdaQdmTemplateValidatorTest < Minitest::Test
 
   def test_should_produce_4_errors_for_using_r3_templates_in_an_r3_1_document
     xml = File.open('./test/fixtures/qrda/cat1_r3_good.xml', 'r', &:read)
-    errors = @validator_r3_1.validate(xml)
+    errors = @validator_r31.validate(xml)
     assert_equal 4, errors.length, 'File should contain 4 errors for incorrect templates'
   end
 end
