@@ -23,7 +23,7 @@ module CqmValidators
       end
 
       def validate(document, data = {})
-        file_errors = document.errors.select { |e| e.fatal? || e.error? }
+        file_errors = get_document(document).errors.select { |e| e.fatal? || e.error? }
         file_errors&.each do |error|
           build_error(error, '/', data[:file_name])
         end

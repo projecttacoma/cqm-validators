@@ -1,7 +1,10 @@
-# frozen_string_literal: true
+# # frozen_string_literal: true
 
 # require 'test_helper'
+
 # class DataValidatorTest < ActiveSupport::TestCase
+#   include CqmValidators
+
 #   setup do
 #     collection_fixtures('bundles', '_id')
 #     collection_fixtures('measures')
@@ -9,7 +12,7 @@
 #     HealthDataStandards::SVS::ValueSet.all.update_all(bundle_id: '4fdb62e01d41c820f6000001')
 #     @bundle = HealthDataStandards::CQM::Bundle.find('4fdb62e01d41c820f6000001')
 #     measures = @bundle.measures
-#     @validator = HealthDataStandards::Validate::DataValidator.new(@bundle, measures.map(&:hqmf_id))
+#     @validator = DataValidator.new(@bundle, measures.map(&:hqmf_id))
 #   end
 
 #   test 'Should produce errors for unknown valuesets or values not found in vs' do

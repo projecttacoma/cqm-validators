@@ -9,6 +9,7 @@ module CqmValidators
     def get_document(input)
       doc = case input
             when File
+              input.rewind
               input.read
             when Nokogiri::XML::Document
               return input

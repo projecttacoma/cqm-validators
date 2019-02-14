@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'cqm_validators'
 require 'nokogiri'
 require 'mongoid'
+require 'health-data-standards'
 
 require 'minitest/autorun'
 require 'minitest/reporters'
@@ -12,6 +13,7 @@ require 'byebug'
 
 Mongoid::Config.load!('config/mongoid.yml', :test)
 Mongoid::Config.purge!
+Mongo::Logger.logger.level = Logger::WARN
 
 module Minitest
   class Test
