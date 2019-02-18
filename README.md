@@ -21,7 +21,7 @@ Please try to follow the [GitHub Coding Style Guides](https://github.com/stylegu
 License
 =======
 
-Copyright 2019 The MITRE Corporation
+Copyright 2014 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
