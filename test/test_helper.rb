@@ -11,8 +11,6 @@ require 'health-data-standards'
 require 'minitest/autorun'
 require 'minitest/reporters'
 
-require 'byebug'
-
 Mongoid::Config.load!('config/mongoid.yml', :test)
 Mongoid::Config.purge!
 Mongo::Logger.logger.level = Logger::WARN

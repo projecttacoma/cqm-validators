@@ -6,5 +6,4 @@ tmp
 .idea
 .rvmrc
 Gemfile.lock
-.DS_Store
 .byebug_history

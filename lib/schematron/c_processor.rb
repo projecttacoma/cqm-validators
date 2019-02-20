@@ -17,7 +17,7 @@ module CqmValidators
         xslt = Nokogiri::XSLT(File.open(ISO_SCHEMATRON))
 
         result = xslt.transform(doc)
-        # this is stupid but needs to be done to assocaite the xslt file with a dirctory
+        # this needs to be done to associate the xslt file with a dirctory
         result = Nokogiri::XML(result.to_s, @schematron_file)
         @processor = Nokogiri::XSLT::Stylesheet.parse_stylesheet_doc(result)
       end

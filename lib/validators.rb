@@ -120,9 +120,5 @@ module CqmValidators
 
   class Cat3PerformanceRate < PerformanceRateValidator
     include Singleton
-
-    # def initialize
-    #  super("Performance Rate Validator", File.join(BASE_DIR, CDA_SDTC_SCHEMA))
-    # end
   end
 end
