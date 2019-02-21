@@ -5,3 +5,5 @@ tmp
 .DS_Store
 .idea
 .rvmrc
+Gemfile.lock
+.byebug_history

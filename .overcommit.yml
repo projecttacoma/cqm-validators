@@ -1,0 +1,18 @@
+PreCommit:
+  RuboCop:
+    enabled: true
+    on_warn: 'fail'
+  HardTabs:
+    enabled: true
+    exclude: ['test/fixtures/**/*', 'lib/schema/**/*', 'lib/schematron/iso-schematron-xslt1/**/*', 'lib/schematron/iso-schematron-xslt2/**/*', 'lib/schematron/qrda/**/*']
+  AuthorName:
+    enabled: false
+CommitMsg:
+  RussianNovel:
+    enabled: true
+  HardTabs:
+    enabled: true
+  TextWidth:
+    enabled: false
+  CapitalizedSubject:
+    enabled: false

@@ -1,0 +1,6 @@
+test:
+  clients:
+    default:
+      database: cqmv_test
+      hosts:
+        - <%= ENV['TEST_DB_HOST'] || '127.0.0.1' %>:27017

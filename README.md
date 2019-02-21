@@ -1,21 +1,17 @@
-This is a validation library that is used by Cypress for QRDA validation.
+This is a library that is used by Cypress for QRDA validation. It contains Schematron validators, schema validators, and validators for QRDA-specific features (measure IDs, performance rates, result extraction, etc).
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cqm_validators.
+Bug reports and pull requests are welcome on GitHub at https://github.com/projecttacoma/cqm_validators.
 
 Environment
 ===========
 
-This project currently uses Ruby 2.0.0, Ruby 2.1.1, Ruby 2.2.1, and JRuby 1.7.11 and is built using [Bundler](http://gembundler.com/). To get all of the dependencies for the project, first install bundler:
+This project currently uses Ruby 2.3, Ruby 2.4, Ruby 2.5 and Ruby 2.6 and is built using [Bundler](http://gembundler.com/). To get all of the dependencies for the project, first install bundler:
 
     gem install bundler
 
 Then run bundler to grab all of the necessary gems:
 
     bundle install
-
-The Quality Measure engine relies on a MongoDB [MongoDB](http://www.mongodb.org/) running a minimum of version 2.4.* or higher.  To get and install Mongo refer to:
-
-    http://www.mongodb.org/display/DOCS/Quickstart
 
 Project Practices
 =================
