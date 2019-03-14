@@ -49,11 +49,9 @@ module CqmValidators
                      '2.16.840.1.114222.4.11.1066',
                      '2.16.840.1.113883.1.11.19579'].freeze
 
-    def initialize(bundle, measure_ids)
-      @bundle = bundle
-      measures = @bundle.measures.in(hqmf_id: measure_ids)
-
-      @oids = measures.collect { |m| m.value_sets.map(&:oid) }.flatten.uniq + HL7_QRDA_OIDS
+    def initialize(measure_ids)
+      measures = CQM::Measure.find(measure_ids)
+      @value_set_ids = measures.collect { |m| m.value_sets.map(&:_id) }.flatten.uniq
     end
 
     def validate(file, options = {})
@@ -61,20 +59,17 @@ module CqmValidators
 
       doc.xpath('//*[@sdtc:valueSet]').each_with_object([]) do |node, errors|
         oid = node.at_xpath('@sdtc:valueSet')
-        vs = @bundle.value_sets.where('oid' => oid).first
+        vs = CQM::ValueSet.where('oid' => oid, '_id' => { '$in' => @value_set_ids }).first
+        next unless vs
+
         code = node.at_xpath('@code')
         code_system_oid = node.at_xpath('@codeSystem')
         null_flavor = node.at_xpath('@nullFlavor')
-        if !vs
-          errors << build_error("The valueset #{oid} declared in the document cannot be found", node.path, options[:file_name])
-        elsif !@oids.include?(oid.value)
-          errors << build_error("File appears to contain data criteria outside that required by the measures. Valuesets in file not in measures tested #{oid}'",
+        next unless vs.concepts.where(code: code, code_system_oid: code_system_oid).count.zero?
+
+        unless null_flavor
+          errors << build_error("The code #{code} in codeSystem #{code_system_oid} cannot be found in the declared valueset #{oid}",
                                 node.path, options[:file_name])
-        elsif vs.concepts.where(code: code, code_system_oid: code_system_oid).count.zero?
-          unless null_flavor
-            errors << build_error("The code #{code} in codeSystem #{code_system_oid} cannot be found in the declared valueset #{oid}",
-                                  node.path, options[:file_name])
-          end
         end
       end
     end
