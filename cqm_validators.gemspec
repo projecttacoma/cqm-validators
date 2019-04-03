@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'byebug'
   spec.add_development_dependency 'minitest', '~> 5.0'
   spec.add_development_dependency 'minitest-reporters'
-  spec.add_development_dependency 'mongoid', '~> 6.3.0'
+  spec.add_development_dependency 'mongoid'
   spec.add_development_dependency 'overcommit'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rubocop', '~> 0.60'
