@@ -4809,16 +4809,5 @@
     }
   },
   "title": "Median Time from ED Arrival to ED Departure for Discharged ED Patients",
-  "updated_at": null,
-  "value_set_ids": [
-    "5c4f2295ef33a519b80ac379",
-    "5c4f2295ef33a519b80ac37a",
-    "5c4f2295ef33a519b80ac37b",
-    "5c4f2295ef33a519b80ac37c",
-    "5c4f2295ef33a519b80ac37d",
-    "5c4f2295ef33a519b80ac37e",
-    "5c4f2295ef33a519b80ac37f",
-    "5c4f2295ef33a519b80ac380",
-    "5c4f2295ef33a519b80ac381"
-  ]
+  "updated_at": null
 }
