@@ -12,12 +12,12 @@ module CqmValidators
       @errors = []
       @doc = get_document(file)
       @doc.root.add_namespace_definition('cda', 'urn:hl7-org:v3')
-      measure_ids = HealthDataStandards::CQM::Measure.all.map(&:hqmf_id)
+      measure_ids = CQM::Measure.all.map(&:hqmf_id)
       doc_measure_ids = @doc.xpath(measure_selector).map(&:value).map(&:upcase)
       # list of all of the set ids in the QRDA
       doc_neutral_ids = @doc.xpath(neutral_measure_selector).map(&:value).map(&:upcase).sort
       # list of all of the setids in the QRDA that are also in the bundle, includes duplicates if code appears twice in document
-      bundle_neutral_ids = HealthDataStandards::CQM::Measure.distinct(:hqmf_set_id)
+      bundle_neutral_ids = CQM::Measure.distinct(:hqmf_set_id)
       doc_bundle_neutral_ids = doc_neutral_ids - (doc_neutral_ids - bundle_neutral_ids)
       validate_measure_ids(doc_measure_ids, measure_ids, data)
       validate_set_ids(doc_neutral_ids, doc_bundle_neutral_ids, data)
@@ -75,7 +75,7 @@ module CqmValidators
         measure_id_entry = doc_measure_ids[(@doc.xpath(location_of_set_id(hqmf_set_id, index)) - entries_start_position)]
         previous = hqmf_set_id
         # queries database to see if there is a measure with the combindation of setId and measureId
-        if HealthDataStandards::CQM::Measure.where(hqmf_id: measure_id_entry, hqmf_set_id: hqmf_set_id).empty?
+        if CQM::Measure.where(hqmf_id: measure_id_entry, hqmf_set_id: hqmf_set_id).empty?
           @errors << build_error("Invalid HQMF Set ID Found: #{hqmf_set_id} for HQMF ID: #{measure_id_entry}", '/', data[:file_name])
         end
       end

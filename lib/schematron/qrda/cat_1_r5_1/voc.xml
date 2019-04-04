@@ -1162,8 +1162,8 @@
     <code value="cancelled" displayName="Cancelled" codeSystemName="ActStatus" codeSystem="2.16.840.1.113883.5.14" />
   </system>
   <system valueSetOid="2.16.840.1.113883.3.249.14.103" valueSetName="QRDA-I CMS Program Name ">
-    <code value="PQRS_MU_INDIVIDUAL" displayName="PQRS Meaningful Use Individual" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
-    <code value="PQRS_MU_GROUP" displayName="PQRS Meaningful Use Group" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
+    <code value="MIPS_INDIVIDUAL" displayName="MIPS Individual" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
+    <code value="MIPS_GROUP" displayName="MIPS Group" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
     <code value="CEC" displayName="Comprehensive End-Stage Renal Disease CARE Initiative" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
     <code value="HQR_EHR" displayName="Hospital Quality Reporting for the EHR Incentive Program" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
     <code value="HQR_IQR" displayName="Hospital Quality Reporting for the Inpatient Quality Reporting Program" codeSystemName="CMS Program" codeSystem="2.16.840.1.113883.3.249.7" />
@@ -1182,5 +1182,10 @@
     <code value="PRF" displayName="performer" codeSystemName="HL7ParticipationType" codeSystem="2.16.840.1.113883.5.90" />
     <code value="SPRF" displayName="secondary performer" codeSystemName="HL7ParticipationType" codeSystem="2.16.840.1.113883.5.90" />
     <code value="PPRF" displayName="primary performer" codeSystemName="HL7ParticipationType" codeSystem="2.16.840.1.113883.5.90" />
+  </system>
+  <system valueSetOid="2.16.840.1.113883.1.11.20549" valueSetName="Criticality Observation">
+    <code value="CRITL" displayName="Low Criticality" codeSystemName="Observation Value" codeSystem="2.16.840.1.113883.5.1063" />
+    <code value="CRITH" displayName="High Criticality" codeSystemName="Observation Value" codeSystem="2.16.840.1.113883.5.1063" />
+    <code value="CRITU" displayName="Unable to assess criticality" codeSystemName="Observation Value" codeSystem="2.16.840.1.113883.5.1063" />
   </system>
 </systems>
