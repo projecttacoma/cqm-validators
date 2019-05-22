@@ -18,7 +18,7 @@ Then run bundler to grab all of the necessary gems:
 Versioning
 ==========
 
-Starting with version **1.0.1.0** released on !!date!!, cqm-validators versioning has the format **W.X.Y.Z**, where:
+Starting with version **1.0.1.0** released on 5/22/2019, cqm-validators versioning has the format **W.X.Y.Z**, where:
 
 * **W** maps to a version of QRDA Category 1 and QRDA Category 3. See the table below to see the existing mapping to QRDA versions.
 
