@@ -6,8 +6,8 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'cqm_validators'
 require 'nokogiri'
 require 'mongoid'
-require 'health-data-standards'
 
+require 'cqm/models'
 require 'minitest/autorun'
 require 'minitest/reporters'
 

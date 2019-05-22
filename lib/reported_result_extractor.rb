@@ -8,12 +8,11 @@ module CqmValidators
     # returns nil if nothing matching is found
     # returns a hash with the values of the populations filled out along with the population_ids added to the result
 
-    def extract_results_by_ids(measure_id, ids, doc)
+    ALL_POPULATION_CODES = %w[IPP DENOM NUMER NUMEX DENEX DENEXCEP MSRPOPL MSRPOPLEX OBSERV].freeze
+
+    def extract_results_by_ids(measure, poulation_set_id, doc, stratification_id = nil)
       results = nil
-      new_ids = ids.dup
-      stratification = new_ids.delete('stratification')
-      stratification ||= new_ids.delete('STRAT')
-      nodes = find_measure_node(measure_id, doc)
+      nodes = find_measure_node(measure.hqmf_id, doc)
 
       if nodes.nil? || nodes.empty?
         # short circuit and return nil
@@ -21,12 +20,11 @@ module CqmValidators
       end
 
       nodes.each do |n|
-        results = get_measure_components(n, new_ids, stratification)
+        results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id)
         break if !results.nil? || (!results.nil? && !results.empty?)
       end
       return nil if results.nil?
 
-      results[:population_ids] = ids.dup
       results
     end
 
@@ -37,20 +35,25 @@ module CqmValidators
       doc.xpath(xpath_measures)
     end
 
-    def get_measure_components(n, ids, stratification)
+    def get_measure_components(n, population_set, stratification_id)
       results = { supplemental_data: {} }
-      ids.each_pair do |k, v|
+      stratification = stratification_id ? population_set.stratifications.where(stratification_id: stratification_id).first.hqmf_id : nil
+      ALL_POPULATION_CODES.each do |pop_code|
+        next unless population_set.populations[pop_code] || pop_code == 'OBSERV'
+
         val = nil
         sup = nil
-        if k == 'OBSERV'
-          msrpopl = ids['MSRPOPL']
-          val, sup = extract_cv_value(n, v, msrpopl, stratification)
+        if pop_code == 'OBSERV'
+          next unless population_set.populations['MSRPOPL']
+
+          msrpopl = population_set.populations['MSRPOPL']['hqmf_id']
+          val, sup = extract_cv_value(n, population_set.observations.first.hqmf_id, msrpopl, stratification)
         else
-          val, sup, pr = extract_component_value(n, k, v, stratification)
+          val, sup, pr = extract_component_value(n, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
         end
         unless val.nil?
-          results[k.to_s] = val
-          results[:supplemental_data][k] = sup
+          results[pop_code] = val
+          results[:supplemental_data][pop_code] = sup
         end
         results['PR'] = pr unless pr.nil?
       end
@@ -74,6 +77,7 @@ module CqmValidators
     end
 
     def extract_component_value(node, code, id, strata = nil)
+      code = 'IPOP' if code == 'IPP'
       xpath_observation = %( cda:component/cda:observation[./cda:value[@code = "#{code}"] and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{id.upcase}']])
       cv = node.at_xpath(xpath_observation)
       return nil unless cv

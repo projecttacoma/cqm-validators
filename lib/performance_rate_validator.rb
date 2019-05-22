@@ -12,17 +12,17 @@ module CqmValidators
     def validate(file, data = {})
       errors_list = []
       document = get_document(file)
+      document.root.add_namespace_definition('cda', 'urn:hl7-org:v3')
       # grab measure IDs from QRDA file
       measure_ids = document.xpath(measure_selector).map(&:value).map(&:upcase)
       measure_ids.each do |measure_id|
-        measures = HealthDataStandards::CQM::Measure.where(id: measure_id)
-        measures.each do |measure|
-          result_key = measure['population_ids'].dup
-          reported_result, = extract_results_by_ids(measure['id'], result_key, document)
+        measure = CQM::Measure.where(hqmf_id: measure_id).first
+        measure.population_sets.each do |population_set|
+          reported_result, = extract_results_by_ids(measure, population_set.population_set_id, document)
           # only check performace rate when there is one
           next if reported_result['PR'].nil?
 
-          error = check_performance_rates(reported_result, result_key, measure['id'], data)
+          error = check_performance_rates(reported_result, population_set, measure.hqmf_id, data)
           errors_list << error unless error.nil?
         end
       end
@@ -48,17 +48,17 @@ module CqmValidators
       pr
     end
 
-    def check_performance_rates(reported_result, population_ids, _measure_id, data = {})
+    def check_performance_rates(reported_result, population_set, _measure_id, data = {})
       expected = calculate_performance_rates(reported_result)
-      ids = population_ids
+      numer_id = population_set.populations.NUMER.hqmf_id
       if expected == 'NA' && reported_result['PR']['nullFlavor'] != 'NA'
-        return build_error("Reported Performance Rate for Numerator #{ids['NUMER']} should be NA", '/', data[:file_name])
+        return build_error("Reported Performance Rate for Numerator #{numer_id} should be NA", '/', data[:file_name])
       elsif reported_result['PR']['nullFlavor'] == 'NA'
-        return build_error("Reported Performance Rate for Numerator #{ids['NUMER']} should not be NA", '/', data[:file_name])
+        return build_error("Reported Performance Rate for Numerator #{numer_id} should not be NA", '/', data[:file_name])
       elsif reported_result['PR']['value'].split('.', 2).last.size > 6
         return build_error('Reported Performance Rate SHALL not have a precision greater than .000001 ', '/', data[:file_name])
       elsif (reported_result['PR']['value'].to_f - expected.round(6)).abs > 0.0000001
-        return build_error("Reported Performance Rate of #{reported_result['PR']['value']} for Numerator #{ids['NUMER']} does not match expected"\
+        return build_error("Reported Performance Rate of #{reported_result['PR']['value']} for Numerator #{numer_id} does not match expected"\
         " value of #{expected.round(6)}.", '/', data[:file_name])
       end
     end
