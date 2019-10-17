@@ -12,6 +12,7 @@ services:
 branches:
   only:
   - master
+  - cqm_validators_2_x
 before_script:
   - git config --global user.email "travis@travis.ci"
   - git config --global user.name "Travis CI"
