@@ -35,7 +35,7 @@ module CqmValidators
       doc.xpath(xpath_measures)
     end
 
-    def get_measure_components(n, population_set, stratification_id)
+    def get_measure_components(node, population_set, stratification_id)
       results = { supplemental_data: {} }
       stratification = stratification_id ? population_set.stratifications.where(stratification_id: stratification_id).first.hqmf_id : nil
       ALL_POPULATION_CODES.each do |pop_code|
@@ -47,9 +47,9 @@ module CqmValidators
           next unless population_set.populations['MSRPOPL']
 
           msrpopl = population_set.populations['MSRPOPL']['hqmf_id']
-          val, sup = extract_cv_value(n, population_set.observations.first.hqmf_id, msrpopl, stratification)
+          val, sup = extract_cv_value(node, population_set.observations.first.hqmf_id, msrpopl, stratification)
         else
-          val, sup, pr = extract_component_value(n, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
+          val, sup, pr = extract_component_value(node, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
         end
         unless val.nil?
           results[pop_code] = val
@@ -136,7 +136,7 @@ module CqmValidators
       value
     end
 
-    def extract_supplemental_data(cv)
+    def extract_supplemental_data(cv_node)
       ret = {}
       supplemental_data_mapping = { 'RACE' => '2.16.840.1.113883.10.20.27.3.8',
                                     'ETHNICITY' => '2.16.840.1.113883.10.20.27.3.7',
@@ -145,7 +145,7 @@ module CqmValidators
       supplemental_data_mapping.each_pair do |supp, id|
         key_hash = {}
         xpath = "cda:entryRelationship/cda:observation[cda:templateId[@root='#{id}']]"
-        (cv.xpath(xpath) || []).each do |node|
+        (cv_node.xpath(xpath) || []).each do |node|
           value = node.at_xpath('cda:value')
           count = get_aggregate_count(node)
           if value.at_xpath('./@nullFlavor')

@@ -52,13 +52,13 @@ module CqmValidators
       expected = calculate_performance_rates(reported_result)
       numer_id = population_set.populations.NUMER.hqmf_id
       if expected == 'NA' && reported_result['PR']['nullFlavor'] != 'NA'
-        return build_error("Reported Performance Rate for Numerator #{numer_id} should be NA", '/', data[:file_name])
+        build_error("Reported Performance Rate for Numerator #{numer_id} should be NA", '/', data[:file_name])
       elsif reported_result['PR']['nullFlavor'] == 'NA'
-        return build_error("Reported Performance Rate for Numerator #{numer_id} should not be NA", '/', data[:file_name])
+        build_error("Reported Performance Rate for Numerator #{numer_id} should not be NA", '/', data[:file_name])
       elsif reported_result['PR']['value'].split('.', 2).last.size > 6
-        return build_error('Reported Performance Rate SHALL not have a precision greater than .000001 ', '/', data[:file_name])
+        build_error('Reported Performance Rate SHALL not have a precision greater than .000001 ', '/', data[:file_name])
       elsif (reported_result['PR']['value'].to_f - expected.round(6)).abs > 0.0000001
-        return build_error("Reported Performance Rate of #{reported_result['PR']['value']} for Numerator #{numer_id} does not match expected"\
+        build_error("Reported Performance Rate of #{reported_result['PR']['value']} for Numerator #{numer_id} does not match expected"\
         " value of #{expected.round(6)}.", '/', data[:file_name])
       end
     end
