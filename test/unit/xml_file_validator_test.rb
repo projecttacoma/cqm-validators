@@ -29,6 +29,12 @@ class XmlFileValidatorTest < ActiveSupport::TestCase
     assert_equal 1, errors.length, 'Should report 1 error'
   end
 
+  test 'should be able to tell when a cat I R5.2 file is bad due to schematron issues' do
+    doc = File.new('test/fixtures/qrda/cat1_bad_5_2_schematron.xml')
+    errors = Cat1R52.instance.validate(doc, file_name: 'filename.xml')
+    assert_equal 1, errors.length, 'Should report 1 error'
+  end
+
   test 'should be able to tell when a cat I file is bad due to not including expected measures' do
     doc = File.new('test/fixtures/qrda/cat1_no_measure_id.xml')
     errors = Cat1R5.instance.validate(doc, file_name: 'filename.xml')
