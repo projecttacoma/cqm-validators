@@ -2,9 +2,15 @@ AllCops:
   TargetRubyVersion: 2.6
   Exclude:
     - bin/*
-Documentation:
+Style/Documentation:
   Enabled: false
 # TODO: remove this exception when java_processor.rb is fixed to rescue StandardError
+Style/HashEachMethods:
+  Enabled: false
+Style/HashTransformKeys:
+  Enabled: false
+Style/HashTransformValues:
+  Enabled: false
 Lint/RescueException:
   Exclude:
     - 'lib/schematron/java_processor.rb'
@@ -25,7 +31,7 @@ Metrics/ClassLength:
     - 'test/**/*'
     # TODO: remove exclusions below this line as Class length is fixed
     - 'lib/qrda_qdm_template_validator.rb'
-Metrics/LineLength:
+Layout/LineLength:
   Max: 150
   Exclude:
     - 'test/**/*'
@@ -50,7 +56,7 @@ Metrics/CyclomaticComplexity:
   Max: 10
 Metrics/PerceivedComplexity:
   Max: 10
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Enabled: false
 Style/DateTime:
   Enabled: false
