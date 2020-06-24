@@ -39,6 +39,21 @@ class PerformanceRateValidatorTest < MiniTest::Test
     assert_equal 1, errors.length
   end
 
+  def test_performance_rate_equals_na_reported_na
+    errors_list = []
+    reported_result = {}
+    reported_result['DENOM'] = 1
+    reported_result['DENEX'] = 1
+    reported_result['DENEXCEP'] = 0
+    reported_result['NUMER'] = 0
+    reported_result['PR'] = {}
+    reported_result['PR']['nullFlavor'] = 'NA'
+    errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
+    errors_list << errors unless errors.nil?
+    # 1 incorrect performance rate
+    assert_equal 0, errors_list.length
+  end
+
   def test_performance_rate_equals_na_reported_1
     errors_list = []
     reported_result = {}
@@ -49,7 +64,7 @@ class PerformanceRateValidatorTest < MiniTest::Test
     reported_result['PR'] = {}
     reported_result['PR']['nullFlavor'] = '1'
     errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
-    errors_list << errors
+    errors_list << errors unless errors.nil?
     # 1 incorrect performance rate
     assert_equal 1, errors_list.length
   end
@@ -112,7 +127,7 @@ class PerformanceRateValidatorTest < MiniTest::Test
     reported_result['PR'] = {}
     reported_result['PR']['value'] = '1.285714'
     errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
-    errors_list << errors
+    errors_list << errors unless errors.nil?
     # 1 incorrect performance rate
     assert_equal 1, errors_list.length
   end
@@ -127,7 +142,7 @@ class PerformanceRateValidatorTest < MiniTest::Test
     reported_result['PR'] = {}
     reported_result['PR']['value'] = '.285715'
     errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
-    errors_list << errors
+    errors_list << errors unless errors.nil?
     # 1 incorrect performance rate
     assert_equal 1, errors_list.length
   end
@@ -142,7 +157,7 @@ class PerformanceRateValidatorTest < MiniTest::Test
     reported_result['PR'] = {}
     reported_result['PR']['value'] = '28.5714'
     errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
-    errors_list << errors
+    errors_list << errors unless errors.nil?
     # 1 incorrect performance rate
     assert_equal 1, errors_list.length
   end
@@ -157,7 +172,7 @@ class PerformanceRateValidatorTest < MiniTest::Test
     reported_result['PR'] = {}
     reported_result['PR']['value'] = '.2857142857'
     errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
-    errors_list << errors
+    errors_list << errors unless errors.nil?
     # 1 incorrect performance rate
     assert_equal 1, errors_list.length
   end
@@ -172,7 +187,7 @@ class PerformanceRateValidatorTest < MiniTest::Test
     reported_result['PR'] = {}
     reported_result['PR']['value'] = '.571428'
     errors = @prcat3.check_performance_rates(reported_result, @proportion_pop_set, nil, file_name: 'test')
-    errors_list << errors
+    errors_list << errors unless errors.nil?
     # 1 incorrect performance rate
     assert_equal 1, errors_list.length
   end
