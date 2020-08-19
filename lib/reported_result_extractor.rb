@@ -11,21 +11,18 @@ module CqmValidators
     ALL_POPULATION_CODES = %w[IPP DENOM NUMER NUMEX DENEX DENEXCEP MSRPOPL MSRPOPLEX OBSERV].freeze
 
     def extract_results_by_ids(measure, poulation_set_id, doc, stratification_id = nil)
-      results = nil
+      aggregate_result = AggregateResult.new(measure_id: measure.id)
       nodes = find_measure_node(measure.hqmf_id, doc)
 
       if nodes.nil? || nodes.empty?
         # short circuit and return nil
-        return {}
+        return nil
       end
 
-      nodes.each do |n|
-        results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id)
-        break if !results.nil? || (!results.nil? && !results.empty?)
+      nodes.each do |node|
+        get_measure_components(node, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id, aggregate_result)
       end
-      return nil if results.nil?
-
-      results
+      aggregate_result
     end
 
     def find_measure_node(id, doc)
@@ -35,8 +32,10 @@ module CqmValidators
       doc.xpath(xpath_measures)
     end
 
-    def get_measure_components(n, population_set, stratification_id)
-      results = { supplemental_data: {} }
+    def get_measure_components(node, population_set, stratification_id, aggregate_result)
+      # results = { supplemental_data: {} }
+      population_set_result = PopulationSetResult.new(population_set_id: population_set[:population_set_id], stratification_id: stratification_id)
+
       stratification = stratification_id ? population_set.stratifications.where(stratification_id: stratification_id).first.hqmf_id : nil
       ALL_POPULATION_CODES.each do |pop_code|
         next unless population_set.populations[pop_code] || pop_code == 'OBSERV'
@@ -47,52 +46,52 @@ module CqmValidators
           next unless population_set.populations['MSRPOPL']
 
           msrpopl = population_set.populations['MSRPOPL']['hqmf_id']
-          val, sup = extract_cv_value(n, population_set.observations.first.hqmf_id, msrpopl, stratification)
+          val, sup = extract_continuous_variable_value(node, population_set.observations.first.hqmf_id, msrpopl, stratification)
         else
-          val, sup, pr = extract_component_value(n, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
+          val, sup, pr = extract_component_value(node, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
         end
         unless val.nil?
-          results[pop_code] = val
-          results[:supplemental_data][pop_code] = sup
+          population_set_result[pop_code] = val
+          population_set_result.supplemental_information << sup.each { |sup_info| sup_info.population = pop_code } if sup
         end
-        results['PR'] = pr unless pr.nil?
+        population_set_result['PR'] = pr unless pr.nil?
       end
-      results
+      aggregate_result.population_set_results << population_set_result
     end
 
-    def extract_cv_value(node, id, msrpopl, strata = nil)
+    def extract_continuous_variable_value(node, id, msrpopl, strata = nil)
       xpath_observation = %( cda:component/cda:observation[./cda:value[@code = "MSRPOPL"] and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{msrpopl.upcase}']])
-      cv = node.at_xpath(xpath_observation)
-      return nil unless cv
+      component_value = node.at_xpath(xpath_observation)
+      return nil unless component_value
 
       val = nil
       if strata
         strata_path = %( cda:entryRelationship[@typeCode="COMP"]/cda:observation[./cda:templateId[@root = "2.16.840.1.113883.10.20.27.3.4"]  and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{strata.upcase}']])
-        n = cv.xpath(strata_path)
-        val = get_cv_value(n, id)
+        n = component_value.xpath(strata_path)
+        val = get_continuous_variable_value(n, id)
       else
-        val = get_cv_value(cv, id)
+        val = get_continuous_variable_value(component_value, id)
       end
-      [val, (strata.nil? ? extract_supplemental_data(cv) : nil)]
+      [val, (strata.nil? ? extract_supplemental_data(component_value) : nil)]
     end
 
     def extract_component_value(node, code, id, strata = nil)
       code = 'IPOP' if code == 'IPP'
       xpath_observation = %( cda:component/cda:observation[./cda:value[@code = "#{code}"] and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{id.upcase}']])
-      cv = node.at_xpath(xpath_observation)
-      return nil unless cv
+      component_value = node.at_xpath(xpath_observation)
+      return nil unless component_value
 
       val = nil
       if strata
         strata_path = %( cda:entryRelationship[@typeCode="COMP"]/cda:observation[./cda:templateId[@root = "2.16.840.1.113883.10.20.27.3.4"]  and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{strata.upcase}']])
-        n = cv.xpath(strata_path)
-        val = get_aggregate_count(n) if n
+        strata_node = component_value.xpath(strata_path)
+        val = get_aggregate_count(strata_node) if strata_node
       else
-        val = get_aggregate_count(cv)
+        val = get_aggregate_count(component_value)
       end
       # Performance rate is only applicable for unstratified values
       pref_rate_value = extract_performance_rate(node, code, id) if code == 'NUMER' && strata.nil?
-      [val, (strata.nil? ? extract_supplemental_data(cv) : nil), pref_rate_value]
+      [val, (strata.nil? ? extract_supplemental_data(component_value) : nil), pref_rate_value]
     end
 
     def extract_performance_rate(node, _code, id)
@@ -120,7 +119,7 @@ module CqmValidators
     end
 
     # given an observation node with an aggregate count node, return the reported and expected value within the count node
-    def get_cv_value(node, cv_id)
+    def get_continuous_variable_value(node, cv_id)
       xpath_value = %(cda:entryRelationship/cda:observation[./cda:templateId[@root="2.16.840.1.113883.10.20.27.3.2"] and ./cda:reference/cda:externalObservation/cda:id[#{translate('@root')}='#{cv_id.upcase}']]/cda:value)
 
       value_node = node.at_xpath(xpath_value)
@@ -136,8 +135,8 @@ module CqmValidators
       value
     end
 
-    def extract_supplemental_data(cv)
-      ret = {}
+    def extract_supplemental_data(component)
+      supplemental_information = []
       supplemental_data_mapping = { 'RACE' => '2.16.840.1.113883.10.20.27.3.8',
                                     'ETHNICITY' => '2.16.840.1.113883.10.20.27.3.7',
                                     'SEX' => '2.16.840.1.113883.10.20.27.3.6',
@@ -145,7 +144,7 @@ module CqmValidators
       supplemental_data_mapping.each_pair do |supp, id|
         key_hash = {}
         xpath = "cda:entryRelationship/cda:observation[cda:templateId[@root='#{id}']]"
-        (cv.xpath(xpath) || []).each do |node|
+        (component.xpath(xpath) || []).each do |node|
           value = node.at_xpath('cda:value')
           count = get_aggregate_count(node)
           if value.at_xpath('./@nullFlavor')
@@ -158,9 +157,15 @@ module CqmValidators
             key_hash[value['code']] = count
           end
         end
-        ret[supp.to_s] = key_hash
+        create_supplemental_information_from_hash(supp, key_hash, supplemental_information)
       end
-      ret
+      supplemental_information
+    end
+
+    def create_supplemental_information_from_hash(supplemental_information_type, key_hash, supplemental_information_list = [])
+      key_hash.each do |code, count|
+        supplemental_information_list << SupplementalInformation.new(patient_count: count, code: code, key: supplemental_information_type)
+      end
     end
 
     def translate(id)

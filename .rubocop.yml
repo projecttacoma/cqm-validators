@@ -22,6 +22,7 @@ Metrics/AbcSize:
     - 'test/**/*.rb'
     # TODO: remove exclusions below this line as ABC Size is fixed
     - 'lib/performance_rate_validator.rb'
+    - 'lib/reported_result_extractor.rb'
 Metrics/BlockLength:
   Exclude:
     - 'test/factories/*'

@@ -19,10 +19,11 @@ module CqmValidators
         measure = CQM::Measure.where(hqmf_id: measure_id).first
         measure.population_sets.each do |population_set|
           reported_result, = extract_results_by_ids(measure, population_set.population_set_id, document)
+          population_set_result = reported_result.population_set_results.first
           # only check performace rate when there is one
-          next if reported_result['PR'].nil?
+          next if population_set_result['PR'].nil?
 
-          error = check_performance_rates(reported_result, population_set, measure.hqmf_id, data)
+          error = check_performance_rates(population_set_result, population_set, measure.hqmf_id, data)
           errors_list << error unless error.nil?
         end
       end
