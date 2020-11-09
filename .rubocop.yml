@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.5
   Exclude:
     - bin/*
 Style/Documentation:
@@ -56,11 +56,10 @@ Metrics/CyclomaticComplexity:
   Max: 10
 Metrics/PerceivedComplexity:
   Max: 10
-Naming/MethodParameterName:
-  Enabled: false
-Naming/UncommunicativeMethodParamName:
   Exclude:
     - 'lib/reported_result_extractor.rb'
+Naming/MethodParameterName:
+  Enabled: false
 Style/DateTime:
   Enabled: false
 Style/GuardClause:
