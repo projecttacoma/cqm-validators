@@ -32,6 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'minitest-reporters'
   spec.add_development_dependency 'mongoid'
   spec.add_development_dependency 'overcommit'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rubocop', '~> 0.60'
+  spec.add_development_dependency 'rake', '>= 12.3.3'
+  spec.add_development_dependency 'rubocop', '~> 0.93'
 end
