@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SimpleCov.start do
   merge_timeout 3600
 end
