@@ -8,6 +8,14 @@ Documentation:
 Lint/RescueException:
   Exclude:
     - 'lib/schematron/java_processor.rb'
+Layout/LineLength:
+  Max: 150
+  Exclude:
+    - 'test/**/*'
+    # TODO: remove exclusions below this line as line length is fixed
+    - 'lib/reported_result_extractor.rb'
+    - 'lib/data_validator.rb'
+    - 'lib/measure_validator.rb'
 Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be a Fixnum or
   # a Float.
@@ -25,14 +33,6 @@ Metrics/ClassLength:
     - 'test/**/*'
     # TODO: remove exclusions below this line as Class length is fixed
     - 'lib/qrda_qdm_template_validator.rb'
-Metrics/LineLength:
-  Max: 150
-  Exclude:
-    - 'test/**/*'
-    # TODO: remove exclusions below this line as line length is fixed
-    - 'lib/reported_result_extractor.rb'
-    - 'lib/data_validator.rb'
-    - 'lib/measure_validator.rb'
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Max: 20
