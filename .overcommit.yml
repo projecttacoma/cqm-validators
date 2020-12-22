@@ -7,6 +7,8 @@ PreCommit:
     exclude: ['test/fixtures/**/*', 'lib/schema/**/*', 'lib/schematron/iso-schematron-xslt1/**/*', 'lib/schematron/iso-schematron-xslt2/**/*', 'lib/schematron/qrda/**/*']
   AuthorName:
     enabled: false
+  AuthorEmail:
+    enabled: false
 CommitMsg:
   RussianNovel:
     enabled: true
