@@ -6,6 +6,10 @@ coverage:
         # basic
         target: auto
         threshold: 0%
+        branches:
+          - master
+        if_ci_failed: error
+        only_pulls: false
 comment:
   layout: "reach, diff, flags, files"
   behavior: default
