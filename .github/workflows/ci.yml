@@ -17,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
     - name: Use Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
       with:
