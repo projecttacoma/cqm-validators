@@ -35,6 +35,7 @@ jobs:
         bundle exec overcommit --run
     - name: Run tests
       run: bundle exec rake
-    - name: Upload coverage to Codecov
+    - name: Codecov action
       uses: codecov/codecov-action@v1.2.1
+    - name: Upload to codecov
       run: bash <(curl -s https://codecov.io/bash)
