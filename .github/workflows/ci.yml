@@ -42,4 +42,5 @@ jobs:
     - name: upload coverage explicitly
       uses: codecov/codecov-action@v1
       with:
-        files: coverage/.resultset.json
+        path_to_write_report: coverage/codecov_report.txt
+        files: coverage/codecov_report.txt
