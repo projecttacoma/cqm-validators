@@ -36,11 +36,12 @@ jobs:
     - name: Run tests
       run: bundle exec rake
     - name: Codecov action
-      uses: codecov/codecov-action@v1.2.1
-    - name: Upload to codecov
-      run: bash <(curl -s https://codecov.io/bash)
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Upload coverage to Codecov example
       uses: codecov/codecov-action@v1
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         verbose: true
         file: ./coverage/.resultset.json
