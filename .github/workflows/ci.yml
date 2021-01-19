@@ -1,4 +1,5 @@
 name: Continuous Integration
+
 on: [push, pull_request]
 
 jobs:
@@ -31,13 +32,3 @@ jobs:
         bundle exec overcommit --run
     - name: Run tests
       run: bundle exec rake
-    - name: Codecov action
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-    - name: Upload coverage to Codecov example
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        verbose: true
-        file: ./coverage/.resultset.json
