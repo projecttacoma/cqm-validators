@@ -16,7 +16,7 @@ jobs:
         mongodb-version: [4.0.18, 4.4]
 
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - name: Use Ruby ${{ matrix.ruby-version }}
@@ -43,3 +43,4 @@ jobs:
       uses: codecov/codecov-action@v1
       with:
         verbose: true
+        file: ./coverage/.resultset.json
