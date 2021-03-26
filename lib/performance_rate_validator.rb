@@ -35,10 +35,13 @@ module CqmValidators
       denexcep = 0
       denom = 0
       numer = 0
+      numex = 0
       denex = reported_result['DENEX'] unless reported_result['DENEX'].nil?
       denexcep = reported_result['DENEXCEP'] unless reported_result['DENEXCEP'].nil?
       denom = reported_result['DENOM'] unless reported_result['DENOM'].nil?
       numer = reported_result['NUMER'] unless reported_result['NUMER'].nil?
+      numex = reported_result['NUMEX'] unless reported_result['NUMEX'].nil?
+      numer -= numex
       denom = denom - denex - denexcep
       pr = if denom.zero?
              'NA'
