@@ -20,7 +20,7 @@ module CqmValidators
       end
 
       nodes.each do |n|
-        results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id, measure.population_criteria)
+        results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id)
         break if !results.nil? || (!results.nil? && !results.empty?)
       end
       return nil if results.nil?
@@ -35,13 +35,13 @@ module CqmValidators
       doc.xpath(xpath_measures)
     end
 
-    def get_measure_components(n, population_set, stratification_id, population_criteria)
+    def get_measure_components(n, population_set, stratification_id)
       results = { supplemental_data: {}, observations: {} }
       stratification = stratification_id ? population_set.stratifications.where(stratification_id: stratification_id).first.hqmf_id : nil
       ALL_POPULATION_CODES.each do |pop_code|
         next unless population_set.populations[pop_code]
 
-        get_observed_values(results, n, pop_code, population_set, population_criteria, stratification) if population_criteria
+        get_observed_values(results, n, pop_code, population_set, stratification)
         val, sup, pr = extract_component_value(n, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
         unless val.nil?
           results[pop_code] = val
@@ -52,14 +52,12 @@ module CqmValidators
       results
     end
 
-    def get_observed_values(results, n, pop_code, population_set, population_criteria, stratification)
+    def get_observed_values(results, n, pop_code, population_set, stratification)
       statement_name = population_set.populations[pop_code]['statement_name']
-      statement_hqmf_id = population_set.populations[pop_code]['hqmf_id']
-      obs_pop_code = population_criteria.values.detect { |pc| pc['hqmf_id'] = statement_hqmf_id }['type']
       statement_observation = population_set.observations.select { |obs| obs.observation_parameter.statement_name == statement_name }
       unless statement_observation.empty?
         hqmf_id = population_set.populations[pop_code]['hqmf_id']
-        results[:observations][obs_pop_code] = extract_cv_value(n, statement_observation.first.hqmf_id, hqmf_id, pop_code, stratification)
+        results[:observations][pop_code] = extract_cv_value(n, statement_observation.first.hqmf_id, hqmf_id, pop_code, stratification)
       end
     end
 
