@@ -36,6 +36,7 @@ module CqmValidators
     end
 
     def get_measure_components(n, population_set, stratification_id)
+      # observations are a hash of population/value. For example {"DENOM"=>108.0, "NUMER"=>2}
       results = { supplemental_data: {}, observations: {} }
       stratification = stratification_id ? population_set.stratifications.where(stratification_id: stratification_id).first.hqmf_id : nil
       ALL_POPULATION_CODES.each do |pop_code|
@@ -54,7 +55,9 @@ module CqmValidators
 
     def get_observed_values(results, n, pop_code, population_set, stratification)
       statement_name = population_set.populations[pop_code]['statement_name']
+      # look to see if there is an observation that corresponds to the specific statement_name
       statement_observation = population_set.observations.select { |obs| obs.observation_parameter.statement_name == statement_name }
+      # return unless an observation is found
       unless statement_observation.empty?
         hqmf_id = population_set.populations[pop_code]['hqmf_id']
         results[:observations][pop_code] = extract_cv_value(n, statement_observation.first.hqmf_id, hqmf_id, pop_code, stratification)
