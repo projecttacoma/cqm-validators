@@ -18,7 +18,7 @@ class ReportedResultExtractorTest < Minitest::Test
     results = extract_results_by_ids(measure, 'PopulationCriteria1', doc)
 
     # make sure the OBSERV result (the actual CV value) equals the value from the XML
-    assert_equal results['OBSERV'], 15.0
+    assert_equal results[:observations].values.first, 15.0
   end
 
   def test_should_return_the_correct_reported_result_for_a_stratified_cv_value
@@ -29,6 +29,6 @@ class ReportedResultExtractorTest < Minitest::Test
     results = extract_results_by_ids(measure, 'PopulationCriteria1', doc, 'PopulationCriteria1 - Stratification 3')
 
     # make sure the OBSERV result (the actual CV value) equals the value from the XML
-    assert_equal results['OBSERV'], 15.0
+    assert_equal results[:observations].values.first, 15.0
   end
 end
