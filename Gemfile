@@ -9,6 +9,6 @@ gemspec development_group: :test
 
 group :test do
   gem 'codecov', require: false
-  gem 'cqm-models', git: 'https://github.com/projecttacoma/cqm-models.git', branch: 'rails_6'
+  gem 'cqm-models', '~> 3.0'
   gem 'simplecov', require: false
 end
