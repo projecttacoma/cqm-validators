@@ -8,6 +8,7 @@ require_relative 'measure_validator'
 require_relative 'data_validator'
 require_relative 'performance_rate_validator'
 require_relative 'qrda_qdm_template_validator'
+require 'singleton'
 
 module CqmValidators
   CDA_SDTC_SCHEMA = 'lib/schema/infrastructure/cda/CDA_SDTC.xsd'
