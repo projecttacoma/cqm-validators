@@ -82,7 +82,7 @@ Version 1.0
         id/@root and id/@extension), then it SHALL contain a @value.
         
  
-       REPORTING PERIIOD: 2023
+       REPORTING PERIIOD: 2021
        Version 1.0
        
        
@@ -154,7 +154,7 @@ Version 1.0
                 Symptom V4 
                 Symptom Concern Act V5 
 
-Mon Oct 04 13:24:32 MDT 2021
+Thu Oct 21 15:23:06 MDT 2021
 -->
 <sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron" xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:svs="urn:ihe:iti:svs:2008" xmlns:voc="http://www.lantanagroup.com/voc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <sch:ns prefix="voc" uri="http://www.lantanagroup.com/voc" />
@@ -969,6 +969,11 @@ Mon Oct 04 13:24:32 MDT 2021
     <sch:rule id="Discharge-Medication-code-errors" context="cda:act[cda:templateId[@root='2.16.840.1.113883.10.20.24.3.105'][@extension='2021-08-01']]/cda:code">
       <sch:assert id="a-4509-28140-error" test="@code='75311-1'">This code SHALL contain exactly one [1..1] @code="75311-1" Discharge medications (CONF:4509-28140).</sch:assert>
       <sch:assert id="a-4509-28141-error" test="@codeSystem='2.16.840.1.113883.6.1'">This code SHALL contain exactly one [1..1] @codeSystem="2.16.840.1.113883.6.1" (CodeSystem: LOINC urn:oid:2.16.840.1.113883.6.1) (CONF:4509-28141).</sch:assert>
+    </sch:rule>
+    <!-- Update: 10-21-2021  Added author validation -->
+    <sch:rule id="Discharge-Medication-Medication-Activity-errors" context="cda:act[cda:templateId[@root='2.16.840.1.113883.10.20.24.3.105'][@extension='2021-08-01']]/cda:entryRelationship[@typeCode='SUBJ']/cda:substanceAdministration[cda:templateId[@root='2.16.840.1.113883.10.20.22.4.16' ][@extension='2014-06-09']]">
+      <sch:assert id="a-4509-32554-error" test="count(cda:author[cda:templateId[@root='2.16.840.1.113883.10.20.24.3.155'][@extension='2019-12-01']]) = 1">SHALL contain exactly one [1..1] Author (V2) (identifier: urn:hl7ii:2.16.840.1.113883.10.20.24.3.155:2019-12-01) (CONF:4509-32554).</sch:assert>
+      <sch:assert id="a-4509-32555-error" test="count(cda:author[cda:templateId[@root='2.16.840.1.113883.10.20.22.4.119']])=0">SHALL NOT contain [0..0] Author Participation (identifier: urn:oid:2.16.840.1.113883.10.20.22.4.119) (CONF:4509-32555).</sch:assert>
     </sch:rule>
   </sch:pattern>
   <sch:pattern id="Drug-Monitoring-Act-pattern-errors">
@@ -2940,7 +2945,7 @@ Mon Oct 04 13:24:32 MDT 2021
       <sch:assert id="a-1098-7347-error" test="count(cda:templateId[@root='2.16.840.1.113883.10.20.22.4.8'][@extension='2014-06-09'])=1">SHALL contain exactly one [1..1] templateId (CONF:1098-7347) such that it SHALL contain exactly one [1..1] @root="2.16.840.1.113883.10.20.22.4.8" (CONF:1098-10525). SHALL contain exactly one [1..1] @extension="2014-06-09" (CONF:1098-32577).</sch:assert>
       <sch:assert id="a-1098-19168-error" test="count(cda:code)=1">SHALL contain exactly one [1..1] code (CONF:1098-19168).</sch:assert>
       <sch:assert id="a-1098-7352-error" test="count(cda:statusCode)=1">SHALL contain exactly one [1..1] statusCode (CONF:1098-7352).</sch:assert>
-      <sch:assert id="a-1098-7356-error" test="count(cda:value[@xsi:type='CD'])=1">SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be selected from ValueSet Problem Severity urn:oid:2.16.840.1.113883.3.88.12.3221.6.8 DYNAMIC (CONF:1098-7356).</sch:assert>
+      <sch:assert id="a-1098-7356-error" test="count(cda:value[@xsi:type='CD'])=1">SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be selected from ValueSet Severity urn:oid:2.16.840.1.113883.3.88.12.3221.6.8 DYNAMIC (CONF:1098-7356).</sch:assert>
     </sch:rule>
     <sch:rule id="Severity-Observation-code-errors" context="cda:observation[cda:templateId[@root='2.16.840.1.113883.10.20.22.4.8'][@extension='2014-06-09']]/cda:code">
       <sch:assert id="a-1098-19169-error" test="@code='SEV'">This code SHALL contain exactly one [1..1] @code="SEV" Severity (CONF:1098-19169).</sch:assert>
