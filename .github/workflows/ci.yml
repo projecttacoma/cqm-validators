@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - cqm_validators_2_x
+      - cqm_validators_3_x
 
 jobs:
   build:
