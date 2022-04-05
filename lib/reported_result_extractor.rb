@@ -20,7 +20,10 @@ module CqmValidators
       end
 
       nodes.each do |n|
-        results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id)
+        popset_index = measure.population_sets_and_stratifications_for_measure.find_index do |pop_set|
+          pop_set[:population_set_id] == poulation_set_id
+        end
+        results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id, popset_index)
         break if !results.nil? || (!results.nil? && !results.empty?)
       end
       return nil if results.nil?
@@ -35,14 +38,14 @@ module CqmValidators
       doc.xpath(xpath_measures)
     end
 
-    def get_measure_components(n, population_set, stratification_id)
+    def get_measure_components(n, population_set, stratification_id, popset_index)
       # observations are a hash of population/value. For example {"DENOM"=>108.0, "NUMER"=>2}
       results = { supplemental_data: {}, observations: {} }
       stratification = stratification_id ? population_set.stratifications.where(stratification_id: stratification_id).first.hqmf_id : nil
       ALL_POPULATION_CODES.each do |pop_code|
         next unless population_set.populations[pop_code]
 
-        get_observed_values(results, n, pop_code, population_set, stratification)
+        get_observed_values(results, n, pop_code, population_set, stratification, popset_index)
         val, sup, pr = extract_component_value(n, pop_code, population_set.populations[pop_code]['hqmf_id'], stratification)
         unless val.nil?
           results[pop_code] = val
@@ -53,14 +56,14 @@ module CqmValidators
       results
     end
 
-    def get_observed_values(results, n, pop_code, population_set, stratification)
+    def get_observed_values(results, n, pop_code, population_set, stratification, popset_index)
       statement_name = population_set.populations[pop_code]['statement_name']
       # look to see if there is an observation that corresponds to the specific statement_name
-      statement_observation = population_set.observations.select { |obs| obs.observation_parameter.statement_name == statement_name }
+      statement_observation = population_set.observations.select { |obs| obs.observation_parameter.statement_name == statement_name }[popset_index]
       # return unless an observation is found
-      unless statement_observation.empty?
+      unless statement_observation.nil?
         hqmf_id = population_set.populations[pop_code]['hqmf_id']
-        results[:observations][pop_code] = extract_cv_value(n, statement_observation.first.hqmf_id, hqmf_id, pop_code, stratification)
+        results[:observations][pop_code] = extract_cv_value(n, statement_observation.hqmf_id, hqmf_id, pop_code, stratification)
       end
     end
 

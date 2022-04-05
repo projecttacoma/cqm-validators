@@ -58,6 +58,10 @@ Metrics/PerceivedComplexity:
   Max: 10
   Exclude:
     - 'lib/reported_result_extractor.rb'
+Metrics/ParameterLists:
+  Max: 5
+  Exclude:
+    - 'lib/reported_result_extractor.rb'
 Naming/MethodParameterName:
   Enabled: false
 Style/DateTime:
