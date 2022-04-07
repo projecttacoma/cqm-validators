@@ -20,8 +20,8 @@ module CqmValidators
       end
 
       nodes.each do |n|
-        popset_index = measure.population_sets_and_stratifications_for_measure.find_index do |pop_set|
-          pop_set[:population_set_id] == poulation_set_id
+        popset_index = measure.population_sets.map(&:population_set_id).find_index do |pop_set|
+          pop_set == poulation_set_id
         end
         results = get_measure_components(n, measure.population_sets.where(population_set_id: poulation_set_id).first, stratification_id, popset_index)
         break if !results.nil? || (!results.nil? && !results.empty?)
