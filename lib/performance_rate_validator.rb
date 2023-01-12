@@ -17,6 +17,8 @@ module CqmValidators
       measure_ids = document.xpath(measure_selector).map(&:value).map(&:upcase)
       measure_ids.each do |measure_id|
         measure = CQM::Measure.where(hqmf_id: measure_id).first
+        next unless measure
+
         measure.population_sets.each do |population_set|
           reported_result, = extract_results_by_ids(measure, population_set.population_set_id, document)
           # only check performace rate when there is one
