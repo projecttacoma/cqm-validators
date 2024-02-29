@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class PerformanceRateValidatorTest < MiniTest::Test
+class PerformanceRateValidatorTest < Minitest::Test
   include CqmValidators
 
   def setup
