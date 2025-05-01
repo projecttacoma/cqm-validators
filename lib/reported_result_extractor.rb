@@ -158,6 +158,8 @@ module CqmValidators
           if value.at_xpath('./@nullFlavor')
             if supp == 'PAYER' && value['xsi:type'] == 'CD' && value['nullFlavor'] == 'OTH' && value.at_xpath('cda:translation') && value.at_xpath('cda:translation')['code']
               key_hash[value.at_xpath('cda:translation')['code']] = count
+            elsif supp == 'SEX' && value['xsi:type'] == 'CD' && value['nullFlavor'] == 'OTH' && value.at_xpath('cda:translation') && value.at_xpath('cda:translation')['code']
+              key_hash[value.at_xpath('cda:translation')['code']] = count
             else
               key_hash['UNK'] = count
             end
